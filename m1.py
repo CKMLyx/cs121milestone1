@@ -9,11 +9,17 @@ from nltk.stem.porter import PorterStemmer
     #2. tf-idf of token?
 
     # Doug
-    tf-idf = {
-            # times 
-
-            }
-
+    # 
+    # inverted index structure:
+    # inv_ind = {
+    #     token : {
+    #       doc_id,
+    #       tf-idf score (# times word shows up in doc)
+    #     }
+    #
+    #
+    # }
+    
     #
 
 #Inverted index structure
