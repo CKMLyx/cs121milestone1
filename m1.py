@@ -75,7 +75,7 @@ def tokenize(s):
     res = []
     p = PorterStemmer()
     for word in s:
-        if word.isalpha():
+        if word.isalnum():
             res.append(p.stem(word))
     return res
 
@@ -86,10 +86,12 @@ TODO: We should also compute the frequency of each token here, store that so
 this should return a dictionary {token:frequency, token2:frequency}
 '''
 from collections import Counter 
+import json
 
 def extract_tokens(file):
     temp = open(file,'r') 
-    soup = BeautifulSoup(temp,'lxml')
+    temp = json.load(temp)
+    soup = BeautifulSoup(temp['content'],'lxml')
     s = soup.get_text()
     results = tokenize(s.split())
     n = len(results)
@@ -122,6 +124,7 @@ def build_index():
     n = len(res[2]) #Iterate for every unique token
     index = dict()
     for token in tokens:
+        print("Working on ... " + token)
         token_result = []
         token_count = 0
         '''
