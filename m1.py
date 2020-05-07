@@ -84,8 +84,9 @@ import json
 
 def extract_tokens(file):
     temp = open(file,'r')
-    temp = json.load(temp)
-    soup = BeautifulSoup(temp['content'],'lxml')
+    # temp = json.load(temp)
+    # soup = BeautifulSoup(temp['content'],'lxml') # this breaks my code because it allows things like făinaru in and i cant encode that
+    soup = BeautifulSoup(temp, 'lxml')
     s = soup.get_text()
     results = tokenize(s.split())
     n = len(results)
@@ -184,8 +185,11 @@ import re
 def saveIndex(filename, index): # saves indexs to files
     f = open(filename, "a")
     for item in index:
-        f.write(item+"\n")
-        f.write(str(index[item])+"\n")
+        print(item)
+        f.write(item)
+        f.write("\n")
+        f.write(str(index[item]))
+        f.write("\n")
         f.write("\n")
 
 
