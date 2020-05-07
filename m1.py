@@ -22,10 +22,10 @@ from nltk.stem.porter import PorterStemmer
 '''
 REQUIREMENTS
 1. Posting on minimum, should have document id, tf-idf score (yes, but might be able to improve?)
-2. Sort the posting by doc-id (no)
+2. Sort the posting by doc-id (yes)
 3. Modularize (yes)
-4. Must off load inverted index from main mem to partial index on disk at least 3 times (no)
-5. Merge partial indexes at end (no)
+4. Must off load inverted index from main mem to partial index on disk at least 3 times (yes)
+5. Merge partial indexes at end (yes)
 '''
 
 '''
