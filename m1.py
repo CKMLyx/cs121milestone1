@@ -53,7 +53,6 @@ def compute():
                 doc_token_mapping[doc_id] = tokens
                 unique_tokens.update(tokens)
                 doc_id += 1
-                # print(doc_id)
     return mapping, doc_token_mapping, unique_tokens
 
 '''
@@ -66,14 +65,27 @@ Added desc (Doug)
                 words that have been "cleaned" through 
                 the PorterStemmer
 '''
+dec_values = set()
+dec_values.update(range(48,57+1))
+dec_values.update(range(65,90+1))
+dec_values.update(range(97,122+1))
 def tokenize(s):
     res = []
     p = PorterStemmer()
     for word in s:
-        if word.isalnum():
-            res.append(p.stem(word))
+        if len(word)>1:
+            word = p.stem(word)
+            val = checkalnum(word)
+            if val:
+                res.append(word)
+            else:
+                continue
     return res
-
+def checkalnum(word):
+    for i in range(len(word)):
+        if ord(word[i]) not in dec_values:
+            return False
+    return True
 '''
 given a json file, tokenizes the contents
 TODO: We should also compute the frequency of each token here, store that so
@@ -92,6 +104,7 @@ def extract_tokens(file):
     n = len(results)
     # compute and map frequency of each token
     token_freq = Counter(results) #Count frequency
+    temp.close()
 
     #Calculate tf score
     final_res = dict()
@@ -120,7 +133,7 @@ def build_index():
     index = dict()
 
     # Calvin
-    MAX_INDEXS = 500
+    MAX_INDEXS = 5000 #Max number of tokens allowed in index before creating partial
     count = 0
 
     for token in tokens:
@@ -174,18 +187,18 @@ def build_index():
             index.clear()
             count = 0
     partialIndex(index) # this is for the last set of indexes, i.e. there are 1900 indexes and 400 are left over if we check for 500
-
+    print("Number of unique tokens = " + str(len(tokens)))
+    print("Number of documents = " + str(len(mapping.keys())))
+    print("Number of tokens in index = " + str(len(index.keys())))
     return index
 
 
 # Calvin
 import re
 
-
 def saveIndex(filename, index): # saves indexs to files
     f = open(filename, "a")
     for item in index:
-        print(item)
         f.write(item)
         f.write("\n")
         f.write(str(index[item]))
@@ -247,7 +260,6 @@ def getAllIndex(file): # grabs all the indexes from a partial index file
 
 import time
 start = time.time()
-# print(build_index()) #entry point
 build_index()
 end = time.time()
 print(end - start)
