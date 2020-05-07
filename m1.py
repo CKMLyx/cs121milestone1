@@ -56,7 +56,7 @@ def compute():
                 doc_token_mapping[doc_id] = tokens
                 unique_tokens.update(tokens)
                 doc_id += 1
-                print(doc_id) #to see that we are actually progressing lol
+                print(doc_id)
     return mapping, doc_token_mapping, unique_tokens 
 
 '''
@@ -75,7 +75,7 @@ def tokenize(s):
     res = []
     p = PorterStemmer()
     for word in s:
-        if word.isalnum():
+        if word.isalpha():
             res.append(p.stem(word))
     return res
 
@@ -87,7 +87,7 @@ this should return a dictionary {token:frequency, token2:frequency}
 '''
 from collections import Counter 
 
-def extract_tokens(file): 
+def extract_tokens(file):
     temp = open(file,'r') 
     soup = BeautifulSoup(temp,'lxml')
     s = soup.get_text()
@@ -160,11 +160,15 @@ def build_index():
             idf = math.log(temp,2) #get idf 
             token_result[ind] = (doc_id,tf * idf) #set to new tuple 
             ind += 1
+        token_result = sorted(token_result,key=lambda tup: tup[0])
         index[token] = token_result
     return index
-                                
-build_index() #entry point
 
+import time
+start = time.time()
+print(build_index()) #entry point
+end = time.time()
+print(end - start)
 
 
 
