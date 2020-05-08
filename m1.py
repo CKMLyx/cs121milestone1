@@ -74,7 +74,7 @@ def tokenize(s):
     p = PorterStemmer()
     for word in s:
         if len(word)>1:
-            word = p.stem(word)
+            word = p.stem(word.lower())
             val = checkalnum(word)
             if val:
                 res.append(word)
@@ -133,7 +133,7 @@ def build_index():
     index = dict()
 
     # Calvin
-    MAX_INDEXS = 5000 #Max number of tokens allowed in index before creating partial
+    MAX_INDEXS = 25000 #Max number of tokens allowed in index before creating partial
     count = 0
 
     for token in tokens:
@@ -173,7 +173,9 @@ def build_index():
             tf = temp_token[1] #get tf score
             temp = len(mapping.keys())/token_count #num of docs / num of docs with that token
             idf = math.log(temp,2) #get idf
-            token_result[ind] = (doc_id,tf * idf) #set to new tuple
+            tf_idf = tf*idf
+            tf_idf = round(tf_idf,6) #Arbitary rounding, idk what to choose
+            token_result[ind] = (doc_id,tf_idf) #set to new tuple
             ind += 1
         token_result = sorted(token_result,key=lambda tup: tup[0])
         index[token] = token_result
@@ -189,7 +191,6 @@ def build_index():
     partialIndex(index) # this is for the last set of indexes, i.e. there are 1900 indexes and 400 are left over if we check for 500
     print("Number of unique tokens = " + str(len(tokens)))
     print("Number of documents = " + str(len(mapping.keys())))
-    print("Number of tokens in index = " + str(len(index.keys())))
     return index
 
 
