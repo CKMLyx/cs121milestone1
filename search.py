@@ -1,6 +1,7 @@
 import os
 from nltk.stem.porter import PorterStemmer
 
+
 def gen_mapping():
     cwd = os.getcwd()
     mapping = {}
@@ -15,7 +16,6 @@ def gen_mapping():
 mapping = gen_mapping() #Dictionary holds doc_id --> filename mapping
 
 
-
 def parse_posting(line):
     res = []
     for i in range(0,len(line),2):
@@ -23,6 +23,7 @@ def parse_posting(line):
         tfidf = line[i+1].strip()
         res.append((doc_id,tfidf))
     return res
+
 
 def search(query):
     '''
@@ -33,15 +34,20 @@ def search(query):
     for query in query_terms:
         term = PorterStemmer().stem(query.lower())
         file = open('index.txt','r')
-        for line in file:
-            line = line.strip('\n')
-            if term == line: #Structure is (token \n postings)
+        simple_index = open("simple_index.txt", "r")    # Format: "(word),(line number)\n"
+        for line in simple_index:
+            line = line.split(",")
+            if term == line[0]:
+                file.seek(int(line[1].strip())) 
+                file.readline() # reads token, essentially getting to next line
                 temp_posting = file.readline().strip('\n').split(',') #Get the postings
                 temp_posting = parse_posting(temp_posting)
                 temp_posting = sorted(temp_posting,key=lambda x:x[1],reverse=True) #Sorts based on tfidf descending
                 search_result[term] = temp_posting
                 break
+        simple_index.close()
         file.close()
+
     '''
     1. Get list of just doc_id
     NOTE - Idk how to compute intersection of tuples based on first value. 
@@ -54,9 +60,9 @@ def search(query):
         for item in search_result[key]:
             temp.add(item[0])
         doc_id[key] = temp
-    '''
-    Find the intersection of postings
-    '''
+#    '''
+#    Find the intersection of postings
+#    '''
     if len(search_result.keys()) > 1: #If more than one term
         posting_set = []
         for key in search_result.keys(): #Turn each set into posting
@@ -85,11 +91,3 @@ TODO
 -Create an index for our index to speed up search. The majority of the time spent is on searching for the token (priority)
 -Order results by tfidf using cosine sim (?)
 '''
-
-
-
-
-
-
-
-
